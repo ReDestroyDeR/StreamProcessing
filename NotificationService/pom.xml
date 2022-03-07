@@ -15,6 +15,7 @@
     <description>NotificationService</description>
     <properties>
         <java.version>17</java.version>
+        <testcontaienrs.version>1.16.3</testcontaienrs.version>
     </properties>
     <dependencies>
         <dependency>
@@ -44,6 +45,24 @@
         <dependency>
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontaienrs.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontaienrs.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mongodb</artifactId>
+            <version>${testcontaienrs.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
