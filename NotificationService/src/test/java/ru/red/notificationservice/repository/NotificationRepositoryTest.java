@@ -38,13 +38,13 @@ class NotificationRepositoryTest {
     void createNotification() {
         var notification = NotificationUtil.createRandom();
         StepVerifier.create(repository.save(notification))
-                .expectNextMatches(n ->
-                        Objects.requireNonNull(repository
-                                        .findAllByUserAddress(notification.getUserAddress())
-                                        .blockFirst())
-                        .equals(n))
+                .expectNextCount(1)
                 .expectComplete()
                 .log()
                 .verify();
+
+        assert notification.equals(repository
+                .findAllByUserAddress(notification.getUserAddress())
+                .blockFirst());
     }
 }
