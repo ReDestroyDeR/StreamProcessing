@@ -5,8 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.bson.types.ObjectId;
-import org.reactivestreams.Publisher;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -14,6 +13,7 @@ import java.util.Arrays;
 
 @Log4j2
 @Aspect
+@Component
 public class ControllerLoggingAspect {
     @Pointcut("within(@org.springframework.web.bind.annotation.RestController *)")
     public void isController() {}
@@ -24,6 +24,7 @@ public class ControllerLoggingAspect {
     @Pointcut("execution(reactor.core.publisher.Flux *(*))")
     public void returnsFlux() {}
 
+    @SuppressWarnings("ReactiveStreamsUnusedPublisher")
     @Around("isController() && returnsMono()")
     public Object logMono(ProceedingJoinPoint pjp) throws Throwable {
         log.info("Calling {} with args {}", pjp.getSignature().toShortString(), Arrays.toString(pjp.getArgs()));
@@ -34,6 +35,7 @@ public class ControllerLoggingAspect {
                         e.getMessage()));
     }
 
+    @SuppressWarnings("ReactiveStreamsUnusedPublisher")
     @Around("isController() && returnsFlux()")
     public Object logFlux(ProceedingJoinPoint pjp) throws Throwable {
         log.info("Calling {} with args {}", pjp.getSignature().toShortString(), Arrays.toString(pjp.getArgs()));
