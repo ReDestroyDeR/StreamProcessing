@@ -4,8 +4,10 @@ import lombok.extern.log4j.Log4j2;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,18 +26,18 @@ public class FetchController {
         this.service = service;
     }
 
-    @GetMapping("/id")
-    public Mono<Notification> fetchNotificationById(@RequestParam("id") ObjectId id) {
+    @PostMapping("/id")
+    public Mono<Notification> fetchNotificationById(@RequestBody ObjectId id) {
         return service.fetchNotificationById(id).as(this::validation);
     }
 
-    @GetMapping("/email")
-    public Flux<Notification> fetchNotificationsByAddress(@RequestParam("email") String address) {
+    @GetMapping("/email/{email}")
+    public Flux<Notification> fetchNotificationsByAddress(@PathVariable("email") String address) {
         return service.fetchNotificationsByAddress(address).as(this::validation);
     }
 
-    @GetMapping("/contents")
-    public Flux<Notification> fetchNotificationsByContents(@RequestParam("contents") String contents) {
+    @GetMapping("/contents/{contents}")
+    public Flux<Notification> fetchNotificationsByContents(@PathVariable("contents") String contents) {
         return service.fetchNotificationsContents(contents).as(this::validation);
     }
 
