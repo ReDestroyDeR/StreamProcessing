@@ -1,1 +1,30 @@
-{"type":"record","name":"ValueOrderAcknowledgment","namespace":"streamprocessing.avro","fields":[{"name":"event","type":{"type":"enum","name":"OrderAckStatus","symbols":["ACK","NACK"]}}]}
+{
+  "type": "record",
+  "name": "ValueOrderAcknowledgment",
+  "namespace": "streamprocessing.avro",
+  "fields": [
+    {
+      "name": "event",
+      "type": {
+        "type": "enum",
+        "name": "OrderAckStatus",
+        "symbols": [
+          "ACK",
+          "NACK"
+        ]
+      },
+    },
+    {
+      "name": "order_id",
+      "type": "string"
+    },
+    {
+      "name": "order_total_price",
+      "type": "int"
+    },
+    {
+      "name": "user_balance",
+      "type": "int"
+    }
+  ]
+}
