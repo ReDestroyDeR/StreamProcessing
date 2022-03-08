@@ -38,24 +38,35 @@ class Notification(object):
     User record
     Args:
         event (AckEvent): Event type
+        order_id (str): Order id
+        order_total_price (int): Order price
+        user_balance (int): Remaining user balance
     """
 
-    def __init__(self, event):
+    def __init__(self, event, order_id, order_total_price, user_balance):
         self.event = event
+        self.order_id = order_id
+        self.order_total_price = order_total_price
+        self.user_balance = user_balance
 
 
-def notification_to_dict(user, ctx):
+def notification_to_dict(notification, ctx):
     """
     Returns a dict representation of a User instance for serialization.
     Args:
-        user (User): User instance.
+        notification (User): User instance.
         ctx (SerializationContext): Metadata pertaining to the serialization
             operation.
     Returns:
         dict: Dict populated with user attributes to be serialized.
     """
     # User._address must not be serialized; omit from dict
-    return dict(event=str(user.event).split(".")[1])
+    return dict(
+        event=str(notification.event).split(".")[1],
+        orderId=notification.order_id,
+        orderTotalPrice=notification.order_total_price,
+        userBalance=notification.user_balance
+    )
 
 
 class NotificationKey(object):
@@ -139,8 +150,14 @@ def main(args):
         try:
             user_address = input("Enter email: ")
             event = input("Enter ACK/NACK: ")
+            order_id = input("Enter Order ID: ")
+            order_total_price = int(input("Enter Order Total Price: "))
+            user_balance = int(input("Enter Remaining User Balance: "))
             key = NotificationKey(address=user_address)
-            notification = Notification(event=AckEvent.ACK if event == "ACK" else AckEvent.NACK)
+            notification = Notification(event=AckEvent.ACK if event == "ACK" else AckEvent.NACK,
+                                        order_id=order_id,
+                                        order_total_price=order_total_price,
+                                        user_balance=user_balance)
             producer.produce(topic=topic, key=key, value=notification,
                              on_delivery=delivery_report)
         except KeyboardInterrupt:
