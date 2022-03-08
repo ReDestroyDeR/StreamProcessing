@@ -12,18 +12,18 @@
           "ACK",
           "NACK"
         ]
-      },
+      }
     },
     {
-      "name": "order_id",
+      "name": "orderId",
       "type": "string"
     },
     {
-      "name": "order_total_price",
+      "name": "orderTotalPrice",
       "type": "int"
     },
     {
-      "name": "user_balance",
+      "name": "userBalance",
       "type": "int"
     }
   ]
