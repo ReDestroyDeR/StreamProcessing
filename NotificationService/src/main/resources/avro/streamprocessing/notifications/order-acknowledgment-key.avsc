@@ -1,0 +1,1 @@
+{"type":"record","name":"KeyOrderAcknowledgment","namespace":"streamprocessing.avro","fields":[{"name":"user_address","type":"string"}]}

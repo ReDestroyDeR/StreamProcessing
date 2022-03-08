@@ -1,0 +1,1 @@
+{"type":"record","name":"ValueOrderAcknowledgment","namespace":"streamprocessing.avro","fields":[{"name":"event","type":{"type":"enum","name":"OrderAckStatus","symbols":["ACK","NACK"]}}]}
