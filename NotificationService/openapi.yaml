@@ -1,0 +1,147 @@
+openapi: 3.0.0
+info:
+  title: Notification Service API
+  description: >-
+    Fetch API providing access to messages that were sent to target users
+  version: 1.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - url: https://virtserver.swaggerhub.com/ReDestroyDeR/notification-service-fetch-api/1.0
+    description: SwaggerHub API Auto Mocking
+  - url: http://localhost:8080/api/notifications
+    description: Localhost deployment
+  - url: http://arch.homework/api/notifications
+    description: Kubernetes deployment
+
+components:
+  schemas:
+    ObjectID:
+      description: MongoDB ObjectID
+      properties:
+        timestamp:
+          type: number
+        date:
+          type: number
+      example:
+        timestamp: 1646767873
+        date: 1646767873000
+
+    Notification:
+      description: E-Mail Notification Representation
+      properties:
+        id:
+          $ref: '#/components/schemas/ObjectID'
+        timestamp:
+          type: number
+        userAddress:
+          type: string
+        contents:
+          type: string
+      example:
+        timestamp: 1646767873728
+        userAddress: "example@example.com"
+        contents: "<html lang='ru'>...</html>"
+    
+    NotificationList:
+      type: array
+      items:
+        $ref: '#/components/schemas/Notification'
+      example:
+        - timestamp: 1646767873728
+          userAddress: "john@example.com"
+          contents: "<html lang='ru'>...</html>"
+        - timestamp: 1646767873000
+          userAddress: "susan@example.com"
+          contents: "<html lang='ru'>...</html>"
+        - timestamp: 1646767800000
+          userAddress: "michael@example.com"
+          contents: "<html lang='ru'>...</html>"
+
+
+paths:
+  /id:
+    post:
+      summary: Returns message by ObjectID
+      description: It has quite simple semantics but it isn't super user friendly
+      requestBody:
+        description: MongoDB ObjectID
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ObjectID'
+      responses:
+        '200':
+          description: JSON Describing message
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        '404':
+          description: Notification with such ID doesn't exist
+  /email/{email}:
+    get:
+      summary: Returns all messages sent to given address
+      parameters:
+        - in: path
+          name: email
+          description: User Address
+          required: true
+          schema:
+            type: string
+          example: "john@example.com"
+
+
+      responses:
+        '200':
+          description: JSON Describing messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationList'
+              example:
+                - timestamp: 1646767873728
+                  userAddress: "john@example.com"
+                  contents: "<html lang='ru'>...</html>"
+                - timestamp: 1646767873000
+                  userAddress: "john@example.com"
+                  contents: "<html lang='ru'>...</html>"
+                - timestamp: 1646767800000
+                  userAddress: "john@example.com"
+                  contents: "<html lang='ru'>...</html>"
+
+        '404':
+          description: Notification to such address doesn't exist
+  /contents/{contents}:
+    get:
+      summary: Returns all messages with contents containing string
+      parameters:
+        - in: path
+          name: contents
+          description: Search string
+          required: true
+          schema:
+            type: string
+          example: "Some String"
+
+
+      responses:
+        '200':
+          description: JSON Describing messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationList'
+              example:
+                - timestamp: 1646767873728
+                  userAddress: "john@example.com"
+                  contents: "<html lang='ru'>...Some String...</html>"
+                - timestamp: 1646767873000
+                  userAddress: "susan@example.com"
+                  contents: "<html lang='ru'>...Some String...</html>"
+                - timestamp: 1646767800000
+                  userAddress: "michael@example.com"
+                  contents: "<html lang='ru'>...Some String...</html>"
+
+        '404':
+          description: Can't find notifications with contents containing target string
