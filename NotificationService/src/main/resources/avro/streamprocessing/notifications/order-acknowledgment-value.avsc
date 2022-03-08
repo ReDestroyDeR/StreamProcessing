@@ -16,15 +16,18 @@
     },
     {
       "name": "orderId",
-      "type": "string"
+      "type": "string",
+      "default": "-"
     },
     {
       "name": "orderTotalPrice",
-      "type": "int"
+      "type": "int",
+      "default": 0
     },
     {
       "name": "userBalance",
-      "type": "int"
+      "type": "int",
+      "default": 0
     }
   ]
 }
