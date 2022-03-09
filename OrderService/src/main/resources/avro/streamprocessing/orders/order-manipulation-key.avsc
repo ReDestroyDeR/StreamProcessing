@@ -1,6 +1,6 @@
 {
   "type": "record",
-  "name": "KeyOrderAcknowledgment",
+  "name": "KeyOrderManipulation",
   "namespace": "streamprocessing.avro",
   "fields": [
     {
