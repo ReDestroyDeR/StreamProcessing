@@ -145,8 +145,8 @@
                 <configuration>
                     <sourceDirectory>src/main/resources/avro/streamprocessing/orders/</sourceDirectory>
                     <includes>
-                        <include>order-acknowledgment-key.avsc</include>
-                        <include>order-acknowledgment-value.avsc</include>
+                        <include>order-manipulation-key.avsc</include>
+                        <include>order-manipulation-value.avsc</include>
                     </includes>
                     <outputDirectory>${project.build.directory}/generated-sources</outputDirectory>
                 </configuration>
@@ -169,15 +169,15 @@
                     </schemaRegistryUrls>
                     <subjects>
                         <order-acknowledgment-key>
-                            src/main/resources/avro/streamprocessing/notifications/order-acknowledgment-key.avsc
+                            src/main/resources/avro/streamprocessing/notifications/order-manipulation-key.avsc
                         </order-acknowledgment-key>
                         <order-acknowledgment-value>
-                            src/main/resources/avro/streamprocessing/notifications/order-acknowledgment-value.avsc
+                            src/main/resources/avro/streamprocessing/notifications/order-manipulation-value.avsc
                         </order-acknowledgment-value>
                     </subjects>
                     <outputDirectory>src/main/resources/avro/streamprocessing/orders/</outputDirectory>
                     <subjectPatterns>
-                        <pattern>^order-acknowledgment-(key|value)$</pattern>
+                        <pattern>^order-manipulation-(key|value)$</pattern>
                     </subjectPatterns>
                 </configuration>
                 <goals>
