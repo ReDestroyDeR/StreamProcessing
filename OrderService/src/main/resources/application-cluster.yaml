@@ -1,0 +1,10 @@
+kafka:
+  bootstrapAddress: ${KAFKA_BOOTSTRAP_ADDRESS}
+  schema:
+    registry:
+      url: ${KAFKA_SCHEMA_REGISTRY_ADDRESS}
+
+spring:
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
