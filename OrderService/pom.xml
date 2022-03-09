@@ -20,6 +20,7 @@
         <testcontaienrs.version>1.16.3</testcontaienrs.version>
         <avro.version>1.11.0</avro.version>
         <confluent.version>7.0.1</confluent.version>
+        <reactor.kafka.version>1.3.0-RC2</reactor.kafka.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -29,6 +30,18 @@
     </properties>
 
     <repositories>
+        <repository>
+            <id>lib</id>
+            <name>lib</name>
+            <releases>
+                <enabled>true</enabled>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <url>file://${project.basedir}/lib</url>
+        </repository>
         <repository>
             <id>confluent</id>
             <url>https://packages.confluent.io/maven/</url>
@@ -95,6 +108,14 @@
             <artifactId>kafka-avro-serializer</artifactId>
             <version>${confluent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>io.projectreactor.kafka</groupId>
+            <artifactId>reactor-kafka</artifactId>
+            <version>1.3.9-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/reactor-kafka-1.3.9-20220110.102324-3.jar</systemPath>
+        </dependency>
+
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -128,10 +149,22 @@
             <version>${testcontaienrs.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>mongodb</artifactId>
             <version>${testcontaienrs.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>kafka</artifactId>
+            <version>1.15.3</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -7,24 +7,29 @@ import reactor.core.publisher.Mono;
 import ru.red.orderservice.domain.Order;
 import ru.red.orderservice.dto.OrderDTO;
 import ru.red.orderservice.mapper.OrderMapper;
+import ru.red.orderservice.producer.OrderProducer;
 import ru.red.orderservice.repository.OrderRepository;
 
 @Service
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository repository;
     private final OrderMapper mapper;
+    private final OrderProducer producer;
 
     @Autowired
     public OrderServiceImpl(OrderRepository repository,
-                            OrderMapper mapper) {
+                            OrderMapper mapper,
+                            OrderProducer producer) {
         this.repository = repository;
         this.mapper = mapper;
+        this.producer = producer;
     }
 
     @Override
     public Mono<Order> createOrder(OrderDTO dto) {
-        return repository
-                .save(mapper.orderDTOToOrder(dto))
+        return repository.save(mapper.orderDTOToOrder(dto))
+                .flatMap(d -> producer.sendCreatedMessage(Flux.just(d))
+                        .then(Mono.just(d)))
                 .switchIfEmpty(Mono.error(new UnknownError("Failed creating notification")));
     }
 

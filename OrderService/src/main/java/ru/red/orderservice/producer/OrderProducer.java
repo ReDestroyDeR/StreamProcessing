@@ -1,24 +1,44 @@
 package ru.red.orderservice.producer;
 
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
-import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+import reactor.kafka.sender.KafkaSender;
+import reactor.kafka.sender.SenderOptions;
+import reactor.kafka.sender.SenderRecord;
+import reactor.kafka.sender.SenderResult;
+import ru.red.orderservice.domain.Order;
+import streamprocessing.avro.KeyOrderManipulation;
+import streamprocessing.avro.ValueOrderManipulation;
+
+import javax.annotation.PreDestroy;
 
 @Component
-@Profile("kafka")
 public class OrderProducer {
-
-    private final Producer<String, String> producer;
+    private final KafkaSender<KeyOrderManipulation, ValueOrderManipulation> producer;
 
     @Autowired
-    public OrderProducer(ProducerFactory<String, String> producerFactory) {
-        this.producer = producerFactory.createProducer();
+    public OrderProducer(SenderOptions<KeyOrderManipulation, ValueOrderManipulation> senderOptions) {
+        this.producer = KafkaSender.create(senderOptions);
     }
 
-    public void produce() {
-        producer.send(new ProducerRecord<String, String>("order-manipulation", "test", "test"));
+    public Flux<SenderResult<String>> sendCreatedMessage(Flux<Order> order) {
+        return producer.send(order.map(o ->
+                        SenderRecord.create(
+                                new ProducerRecord<KeyOrderManipulation, ValueOrderManipulation>
+                                        ("order-manipulation",
+                                                new KeyOrderManipulation(o.getUserAddress()),
+                                                new ValueOrderManipulation(o.getId(), o.getTotalPrice())
+                                        ),
+                                "Created " + o.getId()
+                        )
+                )
+        );
+    }
+
+    @PreDestroy
+    public void closeProducer() {
+        producer.close();
     }
 }
