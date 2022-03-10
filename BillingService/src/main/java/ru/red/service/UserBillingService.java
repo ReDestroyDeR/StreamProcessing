@@ -2,10 +2,10 @@ package ru.red.service;
 
 import reactor.core.publisher.Mono;
 import ru.red.domain.UserBilling;
-import ru.red.dto.UserBillingDTO;
+import ru.red.dto.UserIdentityDTO;
 
 public interface UserBillingService {
-    Mono<UserBilling> create(UserBillingDTO dto);
+    Mono<UserBilling> create(UserIdentityDTO dto);
 
     Mono<UserBilling> findById(Long id);
 
