@@ -1,5 +1,6 @@
 package ru.red.orderservice.service;
 
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -27,10 +28,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Mono<Order> createOrder(OrderDTO dto) {
-        return repository.save(mapper.orderDTOToOrder(dto))
-                .flatMap(d -> producer.sendCreatedMessage(Flux.just(d))
-                        .then(Mono.just(d)))
-                .switchIfEmpty(Mono.error(new UnknownError("Failed creating notification")));
+        if (dto.getTotalPrice() < 0)
+            return Mono.error(new IllegalArgumentException("Negative total price"));
+
+        var order = mapper.orderDTOToOrder(dto);
+        order.setId(ObjectId.get().toHexString());
+        return producer.sendCreatedMessage(Flux.just(order))
+                .then(repository.save(order))
+                .retry(3);
     }
 
     @Override
