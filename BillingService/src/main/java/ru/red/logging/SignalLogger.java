@@ -14,10 +14,10 @@ public class SignalLogger implements Consumer<Signal<?>> {
     public void accept(Signal<?> signal) {
         if (signal.hasError()) {
             if (signal.getThrowable() == null) {
-                log.error("[Signal<{}>] unknown onError", signal.getType().toString());
+                log.error("[Signal<{}>] unknown", signal.getType().toString());
                 return;
             }
-            log.warn("[Signal<{}>] {}:{} onError",
+            log.warn("[Signal<{}>] {}:{}",
                     signal.getType().toString(),
                     signal.getThrowable().getMessage(),
                     signal.getThrowable().getClass().toString());
@@ -25,9 +25,8 @@ public class SignalLogger implements Consumer<Signal<?>> {
             return;
         }
 
-        log.info("[Signal<{}>] {} {}",
+        log.info("[Signal<{}>] {}",
                 signal.getType().toString(),
-                signal.hasValue() ? signal.get() : "Void",
-                signal.isOnNext() ? "onNext" : signal.isOnSubscribe() ? "onSubscribe" : "onComplete");
+                signal.hasValue() ? signal.get() : "Void");
     }
 }
