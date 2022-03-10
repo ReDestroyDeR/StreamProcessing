@@ -4,21 +4,24 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
-import reactor.util.Logger;
 import ru.red.domain.UserBilling;
 import ru.red.dto.UserIdentityDTO;
 import ru.red.exception.BadRequestException;
 import ru.red.exception.NotFoundException;
+import ru.red.logging.SignalLogger;
 import ru.red.repository.UserBillingRepository;
 
 @Log4j2
 @Service
 public class UserBillingServiceImpl implements UserBillingService {
     private final UserBillingRepository repository;
+    private final SignalLogger signalLogger;
 
     @Autowired
-    public UserBillingServiceImpl(UserBillingRepository repository) {
+    public UserBillingServiceImpl(UserBillingRepository repository,
+                                  SignalLogger signalLogger) {
         this.repository = repository;
+        this.signalLogger = signalLogger;
     }
 
     @Override
@@ -28,21 +31,21 @@ public class UserBillingServiceImpl implements UserBillingService {
         domain.setBalance(0);
         return repository.save(domain)
                 .onErrorMap(BadRequestException::new) // TODO: Ignore connection exceptions
-                .log((Logger) log);
+                .doOnEach(signalLogger);
     }
 
     @Override
     public Mono<UserBilling> findById(Long id) {
         return repository.findById(id)
                 .switchIfEmpty(Mono.error(new NotFoundException("No user by id %s".formatted(id))))
-                .log((Logger) log);
+                .doOnEach(signalLogger);
     }
 
     @Override
     public Mono<UserBilling> findByEmail(String email) {
         return repository.findByEmail(email)
                 .switchIfEmpty(Mono.error(new NotFoundException("No user for email %s".formatted(email))))
-                .log((Logger) log);
+                .doOnEach(signalLogger);
     }
 
     @Override
@@ -56,7 +59,7 @@ public class UserBillingServiceImpl implements UserBillingService {
                 })
                 .as(this::billingBalanceValidation)
                 .flatMap(repository::save)
-                .log((Logger) log);
+                .doOnEach(signalLogger);
     }
 
     @Override
@@ -70,7 +73,7 @@ public class UserBillingServiceImpl implements UserBillingService {
                 })
                 .as(this::billingBalanceValidation)
                 .flatMap(repository::save)
-                .log((Logger) log);
+                .doOnEach(signalLogger);
     }
 
     private Mono<UserBilling> billingBalanceValidation(Mono<UserBilling> billingMono) {
