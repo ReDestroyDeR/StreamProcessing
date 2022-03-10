@@ -1,0 +1,12 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/billing
+    name: billing
+    username: postgres
+    password: postgres
+
+  liquibase:
+    url: jdbc:postgresql://localhost:5432/billing
+    user: postgres
+    password: postgres
+    change-log: classpath:db/changelog/changelog-master.yaml
