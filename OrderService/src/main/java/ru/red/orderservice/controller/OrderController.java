@@ -30,11 +30,13 @@ public class OrderController {
 
     @PostMapping
     public Mono<Order> createOrder(@RequestBody OrderDTO dto) {
-        return service.createOrder(dto).onErrorMap(BadRequestException::new).as(this::validation);
+        return service.createOrder(dto)
+                .onErrorMap(e -> new BadRequestException(e.getMessage(), e))
+                .as(this::validation);
     }
 
-    @PostMapping("/id")
-    public Mono<Order> fetchOrderById(@RequestBody String id) {
+    @GetMapping("/id/{id}")
+    public Mono<Order> fetchOrderById(@PathVariable("id") String id) {
         return service.fetchOrderById(id).as(this::validation);
     }
 
