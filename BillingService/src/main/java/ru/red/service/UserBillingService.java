@@ -11,7 +11,7 @@ public interface UserBillingService {
 
     Mono<UserBilling> findByEmail(String email);
 
-    Mono<UserBilling> addFundsToUser(UserBilling billing);
+    Mono<UserBilling> addFundsToUser(String email, int add);
 
-    Mono<UserBilling> removeFundsFromUser(UserBilling billing);
+    Mono<UserBilling> removeFundsFromUser(String email, int sub);
 }
