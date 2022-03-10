@@ -50,7 +50,10 @@ public class UserBillingServiceImpl implements UserBillingService {
 
     @Override
     public Mono<UserBilling> addFundsToUser(String email, int add) {
-        return findByEmail(email)
+        return Mono.just(add)
+                .as(this::fundsValidation)
+                .doOnError(e -> log.warn("Funds add on {} {}", email, e.getMessage()))
+                .then(findByEmail(email))
                 .map(billing -> {
                     billing.setBalance(
                             billing.getBalance() + add
@@ -59,12 +62,16 @@ public class UserBillingServiceImpl implements UserBillingService {
                 })
                 .as(this::billingBalanceValidation)
                 .flatMap(repository::save)
-                .doOnEach(signalLogger);
+                .doOnEach(signalLogger)
+                .doOnSuccess(s -> log.info("Funds operation on {} +{} ({})", email, add, s.getBalance()));
     }
 
     @Override
     public Mono<UserBilling> removeFundsFromUser(String email, int sub) {
-        return findByEmail(email)
+        return Mono.just(sub)
+                .as(this::fundsValidation)
+                .doOnError(e -> log.warn("Funds sub on {} {}", email, e.getMessage()))
+                .then(findByEmail(email))
                 .map(billing -> {
                     billing.setBalance(
                             billing.getBalance() - sub
@@ -73,7 +80,12 @@ public class UserBillingServiceImpl implements UserBillingService {
                 })
                 .as(this::billingBalanceValidation)
                 .flatMap(repository::save)
-                .doOnEach(signalLogger);
+                .doOnEach(signalLogger)
+                .doOnSuccess(s -> log.info("Funds operation on {} -{} ({})", email, sub, s.getBalance()));
+    }
+
+    private Mono<Integer> fundsValidation(Mono<Integer> delta) {
+        return delta.flatMap(d -> d < 0 ? Mono.error(new BadRequestException("Negative delta")) : delta);
     }
 
     private Mono<UserBilling> billingBalanceValidation(Mono<UserBilling> billingMono) {
