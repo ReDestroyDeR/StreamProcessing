@@ -74,15 +74,15 @@ paths:
 
   /id/{id}:
     get:
-      summary: Returns message by ObjectID
+      summary: Returns message by Big Int ID
       parameters:
         - in: path
           name: id
-          description: ObjectId Hex String
+          description: Id
           required: true
           schema:
-            type: string
-          example: "17"
+            type: number
+          example: 17
 
       responses:
         '200':
