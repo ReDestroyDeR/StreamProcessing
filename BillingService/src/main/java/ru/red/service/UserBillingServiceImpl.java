@@ -51,7 +51,7 @@ public class UserBillingServiceImpl implements UserBillingService {
         return Mono.just(add)
                 .as(this::fundsValidation)
                 .doOnError(e -> log.warn("Funds add on {} {}", email, e.getMessage()))
-                .then(findByEmail(email))
+                .then(findByEmail(email)) // Why bother validating negative balance for addition?
                 .flatMap(billing -> applyDeltaWithValidation(billing, billing.getBalance() + add))
                 .flatMap(repository::save)
                 .doOnNext(s -> log.info("Funds operation on {} +{} ({})", email, add, s.getBalance()));
