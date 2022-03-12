@@ -24,7 +24,7 @@ components:
           type: number
       example:
         id: 17
-        userAddress: "example@example.com"
+        email: "example@example.com"
         balance: 1000
 
     UserBillingDTO:
@@ -36,7 +36,7 @@ components:
         balance:
           type: number
       example:
-        userAddress: "example@example.com"
+        email: "example@example.com"
         balance: 1000
 
     UserIdentityDTO:
@@ -46,7 +46,7 @@ components:
         email:
           type: string
       example:
-        userAddress: "example@example.com"
+        email: "example@example.com"
 
 
 
@@ -147,7 +147,7 @@ paths:
                 $ref: '#/components/schemas/UserBilling'
               example:
                 id: "17"
-                userAddress: "example@example.com"
+                email: "example@example.com"
                 totalPrice: 2500
 
         '400':
@@ -185,7 +185,7 @@ paths:
                 $ref: '#/components/schemas/UserBilling'
               example:
                 id: "17"
-                userAddress: "example@example.com"
+                email: "example@example.com"
                 totalPrice: 2000
 
         '400':
