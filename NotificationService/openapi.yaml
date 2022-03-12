@@ -5,9 +5,6 @@ info:
     Fetch API providing access to messages that were sent to target users
   version: 1.0.0
 servers:
-  # Added by API Auto Mocking Plugin
-  - url: https://virtserver.swaggerhub.com/ReDestroyDeR/notification-service-fetch-api/1.0
-    description: SwaggerHub API Auto Mocking
   - url: http://localhost:8080/api/notifications
     description: Localhost deployment
   - url: http://arch.homework/api/notifications
@@ -15,22 +12,11 @@ servers:
 
 components:
   schemas:
-    ObjectID:
-      description: MongoDB ObjectID
-      properties:
-        timestamp:
-          type: number
-        date:
-          type: number
-      example:
-        timestamp: 1646767873
-        date: 1646767873000
-
     Notification:
       description: E-Mail Notification Representation
       properties:
         id:
-          $ref: '#/components/schemas/ObjectID'
+          type: string
         timestamp:
           type: number
         userAddress:
@@ -38,6 +24,7 @@ components:
         contents:
           type: string
       example:
+        id: "622c92fb80edfc4891b885ad"
         timestamp: 1646767873728
         userAddress: "example@example.com"
         contents: "<html lang='ru'>...</html>"
@@ -47,29 +34,32 @@ components:
       items:
         $ref: '#/components/schemas/Notification'
       example:
-        - timestamp: 1646767873728
+        - id: "622c92fb80edfc4891b885ad"
+          timestamp: 1646767873728
           userAddress: "john@example.com"
           contents: "<html lang='ru'>...</html>"
-        - timestamp: 1646767873000
+        - id: "622c92fb80edfc4891b885ad"
+          timestamp: 1646767873000
           userAddress: "susan@example.com"
           contents: "<html lang='ru'>...</html>"
-        - timestamp: 1646767800000
+        - id: "622c92fb80edfc4891b885ad"
+          timestamp: 1646767800000
           userAddress: "michael@example.com"
           contents: "<html lang='ru'>...</html>"
 
 
 paths:
-  /id:
-    post:
-      summary: Returns message by ObjectID
-      description: It has quite simple semantics but it isn't super user friendly
-      requestBody:
-        description: MongoDB ObjectID
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ObjectID'
+  /id/{id}:
+    get:
+      summary: Returns message by 24 digit hex ObjectID
+      parameters:
+        - in: path
+          name: id
+          description: ObjectID Hex
+          required: true
+          schema:
+            type: string
+          example: "6227af0651d9c14602d59d6a"
       responses:
         '200':
           description: JSON Describing message
@@ -100,13 +90,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationList'
               example:
-                - timestamp: 1646767873728
+                - id: "622c92fb80edfc4865438ade"
+                  timestamp: 1646767873728
                   userAddress: "john@example.com"
                   contents: "<html lang='ru'>...</html>"
-                - timestamp: 1646767873000
+                - id: "622c32fb80fdf74891b885ad"
+                  timestamp: 1646767873000
                   userAddress: "john@example.com"
                   contents: "<html lang='ru'>...</html>"
-                - timestamp: 1646767800000
+                - id: "622c92fb80edfc4891c43852"
+                  timestamp: 1646767800000
                   userAddress: "john@example.com"
                   contents: "<html lang='ru'>...</html>"
 
@@ -133,13 +126,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/NotificationList'
               example:
-                - timestamp: 1646767873728
+                - id: "622c92fb80edfc4891c43852"
+                  timestamp: 1646767873728
                   userAddress: "john@example.com"
                   contents: "<html lang='ru'>...Some String...</html>"
-                - timestamp: 1646767873000
+                - id: "622c32fb80fdf74891b885ad"
+                  timestamp: 1646767873000
                   userAddress: "susan@example.com"
                   contents: "<html lang='ru'>...Some String...</html>"
-                - timestamp: 1646767800000
+                - id: "622c94fb80edfc4865438ade"
+                  timestamp: 1646767800000
                   userAddress: "michael@example.com"
                   contents: "<html lang='ru'>...Some String...</html>"
 

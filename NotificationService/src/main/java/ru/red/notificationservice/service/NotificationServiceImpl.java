@@ -1,6 +1,5 @@
 package ru.red.notificationservice.service;
 
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -41,7 +40,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public Mono<Notification> fetchNotificationById(ObjectId id) {
+    public Mono<Notification> fetchNotificationById(String id) {
         return repository.findById(id);
     }
 }
