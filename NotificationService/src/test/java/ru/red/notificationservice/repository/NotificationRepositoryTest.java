@@ -1,12 +1,8 @@
 package ru.red.notificationservice.repository;
 
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
@@ -17,8 +13,6 @@ import reactor.test.StepVerifier;
 import ru.red.notificationservice.containers.MongoContainer;
 import ru.red.notificationservice.util.NotificationUtil;
 
-import java.util.Objects;
-
 @Testcontainers
 @SpringBootTest
 @ActiveProfiles("test")
@@ -28,7 +22,8 @@ class NotificationRepositoryTest {
 
     @DynamicPropertySource
     static void mongoDbProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+        registry.add("spring.data.mongodb.host", mongoDBContainer::getHost);
+        registry.add("spring.data.mongodb.port", () -> mongoDBContainer.getMappedPort(27017));
     }
 
     @Autowired

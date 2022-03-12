@@ -279,17 +279,22 @@
         {
           "listen": "test",
           "script": {
-            "exec": [
-              "pm.test(\"Success\", function() {",
-              "    pm.expect(pm.response.code).eq(200)",
-              "    const array = pm.response.json()",
-              "    array.forEach(notification => {",
-              "        pm.expect(notification.contents).include(pm.variables.get(\"contents\"))",
-              "    })",
-              "})"
-            ],
-            "type": "text/javascript"
-          }
+			  "exec": [
+				  "pm.test(\"Success\", function() {",
+				  "    if (pm.environment.get(\"orders\") == 0) {",
+				  "        pm.expect(pm.response.code).eq(404)",
+				  "        return",
+				  "    }",
+				  "",
+				  "    pm.expect(pm.response.code).eq(200)",
+				  "    const array = pm.response.json()",
+				  "    array.forEach(notification => {",
+				  "        pm.expect(notification.contents).include(pm.variables.get(\"contents\"))",
+				  "    })",
+				  "})"
+			  ],
+			  "type": "text/javascript"
+		  }
         }
       ],
       "request": {

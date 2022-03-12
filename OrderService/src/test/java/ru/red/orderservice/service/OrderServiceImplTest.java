@@ -35,9 +35,9 @@ class OrderServiceImplTest {
     OrderMapper mapper;
 
     @DynamicPropertySource
-    static void dynamicProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
-        registry.add("kafka.bootstrapAddress", kafkaContainer::getBootstrapServers);
+    static void mongoDbProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.mongodb.host", mongoDBContainer::getHost);
+        registry.add("spring.data.mongodb.port", () -> mongoDBContainer.getMappedPort(27017));
     }
 
     @Test
