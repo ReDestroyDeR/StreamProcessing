@@ -1,10 +1,10 @@
 kafka:
-  bootstrapAddress: ${KAFKA_BOOTSTRAP_ADDRESS}
+  bootstrapAddress: ${KAFKA_BOOTSTRAP_SERVERS}
   schema:
     registry:
-      url: ${KAFKA_SCHEMA_REGISTRY_ADDRESS}
+      url: ${KAFKA_SCHEMA_REGISTRY_URL}
 
 spring:
   data:
     mongodb:
-      uri: ${MONGO_URI}
+      uri: mongodb://${MONGO_HOST}:${MONGO_PORT}/${MONGO_REPLICA_SET}
