@@ -74,7 +74,7 @@ paths:
 
   /id/{id}:
     get:
-      summary: Returns message by Big Int ID
+      summary: Returns billing by Big Int ID
       parameters:
         - in: path
           name: id
@@ -109,7 +109,7 @@ paths:
 
       responses:
         '200':
-          description: JSON Describing messages
+          description: JSON Describing billing
           content:
             application/json:
               schema:

@@ -87,7 +87,7 @@ paths:
 
   /id/{id}:
     get:
-      summary: Returns message by ObjectID
+      summary: Returns order by ObjectID
       parameters:
         - in: path
           name: id
@@ -99,7 +99,7 @@ paths:
 
       responses:
         '200':
-          description: JSON Describing message
+          description: JSON Describing order
           content:
             application/json:
               schema:
@@ -109,7 +109,7 @@ paths:
 
   /email/{email}:
     get:
-      summary: Returns all messages sent to given address
+      summary: Returns all orders sent to given address
       parameters:
         - in: path
           name: email
@@ -122,7 +122,7 @@ paths:
 
       responses:
         '200':
-          description: JSON Describing messages
+          description: JSON Describing orders
           content:
             application/json:
               schema:
@@ -164,7 +164,7 @@ paths:
 
       responses:
         '200':
-          description: JSON Describing messages
+          description: JSON Describing orders
           content:
             application/json:
               schema:
