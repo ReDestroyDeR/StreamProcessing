@@ -20,6 +20,6 @@ public class IdempotentOrder {
     private Order response;
 
     @Field
-    @Indexed(name = "ttl", expireAfter = "${service.order.idempotency.ttl}")
+    @Indexed(name = "ttl", expireAfter = "#{@idempotentConfig.ttl}")
     private Date ttl = Date.from(Instant.now());
 }
