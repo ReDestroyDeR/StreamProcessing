@@ -4,8 +4,12 @@ import lombok.Data;
 import lombok.NonNull;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import java.time.Instant;
+import java.util.Date;
 
 @Data
 @Document(collection = "idempotency")
@@ -14,6 +18,8 @@ public class IdempotentOrder {
     private String idempotencyKey;
     @NonNull
     private Order response;
-    @Indexed(expireAfter = "${service.order.idempotency.ttl}")
-    private Integer ttl;
+
+    @Field
+    @Indexed(name = "ttl", expireAfter = "${service.order.idempotency.ttl}")
+    private Date ttl = Date.from(Instant.now());
 }

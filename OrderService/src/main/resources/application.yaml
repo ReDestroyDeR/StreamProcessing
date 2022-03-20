@@ -9,10 +9,12 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      database: notifications
-      authentication-database: notifications
+      database: order
+      authentication-database: order
+      auto-index-creation: true
+
 
 service:
   order:
     idempotency:
-      ttl: 5m
+      ttl: 10s
