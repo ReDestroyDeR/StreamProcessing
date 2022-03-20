@@ -13,3 +13,9 @@ spring:
       password: ${MONGO_PASSWORD}
       database: ${MONGO_DATABASE}
       authentication-database: ${MONGO_DATABASE}
+      auto-index-creation: true
+
+service:
+  order:
+    idempotency:
+      ttl: ${SERVICE_ORDER_IDEMPOTENCY_TTL:5m}

@@ -86,7 +86,7 @@ spec:
     spec:
       containers:
         - name: order-service
-          image: "redestroyder/order-service:0.0.1"
+          image: "redestroyder/order-service:0.0.2"
           imagePullPolicy: Always
           envFrom:
             - configMapRef:

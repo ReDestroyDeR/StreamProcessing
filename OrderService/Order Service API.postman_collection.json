@@ -45,7 +45,36 @@
               "        pm.expect(response.code).eq(400)",
               "    })",
               "}) ",
-              ""
+              "",
+              "pm.test(\"Idempotency test\", function() {",
+              "    const request_spec = {",
+              "        url: pm.collectionVariables.get(\"baseUrl\"),",
+              "        method: \"POST\",",
+              "        header: {",
+              "            'Content-Type': 'application/json',",
+              "            'Idempotency-Key': pm.variables.replaceIn(\"{{$randomUUID}}\")",
+              "        },",
+              "        body: {",
+              "            mode: \"raw\",",
+              "            raw: JSON.stringify({userAddress: pm.environment.get(\"email\"), totalPrice: 100})",
+              "        }",
+              "    }",
+              "",
+              "    pm.sendRequest(request_spec, function(error, response) {",
+              "        pm.expect(response.code).eq(200)",
+              "        pm.environment.set(\"orders\", pm.environment.get(\"orders\") + 1)",
+              "        pm.sendRequest(pm.collectionVariables.get(\"baseUrl\") + \"/email/\" + pm.environment.get(\"email\"), function(err, res) {",
+              "            const base_length = res.json().length",
+              "            pm.sendRequest(request_spec, function(inner_error, inner_response) {",
+              "                pm.expect(inner_response.code).eq(200)",
+              "                pm.sendRequest(pm.collectionVariables.get(\"baseUrl\") + \"/email/\" + pm.environment.get(\"email\"), function(err_1, res_1) {",
+              "                    const new_length = res_1.json().length",
+              "                    pm.expect(base_length).eq(new_length)",
+              "                })",
+              "            })",
+              "        })",
+              "    })",
+              "}) "
             ],
             "type": "text/javascript"
           }
@@ -61,6 +90,11 @@
           {
             "key": "Accept",
             "value": "application/json"
+          },
+          {
+            "key": "Idempotency-Key",
+            "value": "{{$randomUUID}}",
+            "type": "text"
           }
         ],
         "body": {
