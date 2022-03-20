@@ -11,3 +11,8 @@ spring:
       port: 27017
       database: notifications
       authentication-database: notifications
+
+service:
+  order:
+    idempotency:
+      ttl: 5m

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,8 +14,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import ru.red.orderservice.controller.exceptions.BadRequestException;
 import ru.red.orderservice.controller.exceptions.NotFoundException;
+import ru.red.orderservice.domain.IdempotentOrder;
 import ru.red.orderservice.domain.Order;
 import ru.red.orderservice.dto.OrderDTO;
+import ru.red.orderservice.service.OrderOperationService;
 import ru.red.orderservice.service.OrderService;
 
 @Log4j2
@@ -22,15 +25,21 @@ import ru.red.orderservice.service.OrderService;
 @RequestMapping("/api/orders")
 public class OrderController {
     private final OrderService service;
+    private final OrderOperationService idempotency;
 
     @Autowired
-    public OrderController(OrderService service) {
+    public OrderController(OrderService service, OrderOperationService idempotency) {
         this.service = service;
+        this.idempotency = idempotency;
     }
 
     @PostMapping
-    public Mono<Order> createOrder(@RequestBody OrderDTO dto) {
-        return service.createOrder(dto)
+    public Mono<Order> createOrder(@RequestBody OrderDTO dto,
+                                   @RequestHeader("Idempotency-Key") String idempotencyKey) {
+        return idempotency.getByIdempotencyKey(idempotencyKey)
+                .switchIfEmpty(service.createOrder(dto)
+                        .flatMap(response -> idempotency.commit(idempotencyKey, response))
+                        .map(IdempotentOrder::getResponse))
                 .onErrorMap(e -> new BadRequestException(e.getMessage(), e))
                 .as(this::validation);
     }
